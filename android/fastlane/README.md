@@ -15,6 +15,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Android
 
+### android slack_debug
+
+```sh
+[bundle exec] fastlane android slack_debug
+```
+
+Debug the Slack integration
+
 ### android test
 
 ```sh
@@ -38,22 +46,6 @@ Increments version in the pubspec.yaml
 ```
 
 Uses Firebase App Distribution to distribute the APK to testers
-
-### android beta
-
-```sh
-[bundle exec] fastlane android beta
-```
-
-
-
-### android deploy
-
-```sh
-[bundle exec] fastlane android deploy
-```
-
-Deploy a new version to the Google Play
 
 ----
 
