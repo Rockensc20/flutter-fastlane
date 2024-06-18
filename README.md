@@ -1,16 +1,8 @@
 # flutter_fastlane
 
-A new Flutter project.
+An experimental repository for attempting to implement Fastlane tools with a Flutter project.
+Based on the Flutter Starter Project, but extended with an implementation of Fastlane for Firebase Application Distribution.
+Built to work with GitHub Actions and integrates Slack for notifications.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Notes
+Fastlane was setup in a way to only work for Android due to a lack of XCode, which is why the folder and its appfile as well as fastfile are in the android folder.
