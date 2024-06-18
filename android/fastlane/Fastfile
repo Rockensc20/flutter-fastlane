@@ -16,11 +16,20 @@
 default_platform(:android)
 
 platform :android do
+
+  desc "Debug the Slack integration"
+  lane :slack_debug do
+    slack(
+          message: "This is a test message from the Fastlane Slack Bot",
+          success: true,
+          slack_url: ENV["SLACK_URL"]
+    )
+  end
+
   desc "Runs all the tests"
   lane :test do
     gradle(task: "test")
   end
-
 
   desc "Increments version in the pubspec.yaml"
     lane :increment_version do
@@ -31,11 +40,12 @@ platform :android do
   # uses firebase_app_distribution plugin
   desc "Uses Firebase App Distribution to distribute the APK to testers"
     lane :firebase_distribute do
+        sh "flutter build apk -v"
         gradle(
           task: "assemble",
           build_type: "Release"
         )
-        # build_android_app is a built-in fastlane action.
+        # use plugin for distributing the app to beta testers
         release = firebase_app_distribution(
             service_credentials_file: "./fastlane/credentials.json",
             app: ENV["FIREBASE_APP_ID"],
@@ -45,22 +55,20 @@ platform :android do
             release_notes_file: "./fastlane/release-notes.txt",
             debug: true
         )
+        # inform team members
+        slack(
+          message: "Successfully submitted a new App Update for Beta Testing",
+          success: true,
+          slack_url: ENV["SLACK_URL"]
+        )
     end
 
-  lane :beta do
-    # Both build_type and flavor can be adjusted depending on the setup
-    # To find all Gradle commands use 'fastlane action gradle' in the CLI
-    gradle(
-      task: 'assemble',
-      build_type: 'Release'
-    )
-
-    #upload_to_play_store(track: 'beta')
-  end
-
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
-  end
+    error do |lane, exception|
+      slack(
+        message: "Something went wrong with the deployment.",
+        success: false,
+        slack_url: ENV["SLACK_URL"],
+        payload: { "Error Info" => exception.error_info.to_s }
+      )
+    end
 end

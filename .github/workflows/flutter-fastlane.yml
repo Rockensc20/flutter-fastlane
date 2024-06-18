@@ -2,49 +2,65 @@ name: flutter-fastlane-flow
 
 on:
     push:
-      branches: [ fastlane-with-github-action ]
+      branches: [ "main" ]
+    pull_request:
+      branches: [ "main" ]
 jobs:
-    # Job 1 ->
     CI-Prod:
       name: Apk uploading on Firebase App Distribution
       runs-on: ubuntu-latest
-  
+      env: 
+        SLACK_URL: ${{ secrets.SLACK_URL }}
       steps:
         # Step 1 Checkout Repository
         - name: Checkout repository
-          uses: actions/checkout@v2
+          uses: actions/checkout@v4
   
-        # Step 2 Setup JDK
+        # Step 2 Setup the JDK, use the same version as locally, ran into issues otherwise
         - name: Setup JDK
           uses: actions/setup-java@v1
           with:
             java-version: 17
   
-        # Step 3 Setup Ruby
+        # Step 3 Setup Ruby based on the locally created gemfile
         - name: Setup Ruby
-          uses: actions/setup-ruby@v1
+          env: 
+            BUNDLE_GEMFILE: ${{ github.workspace }}/android/Gemfile #since the Fastlane folder is android specific in this case, explicitely set the path
+          uses: ruby/setup-ruby@v1
           with:
-            ruby-version: 'ruby 3.2.3'
-  
-        # Step 4 Install the bundler & Fastlane (Create environment for ruby to avoid dependency hell and manage the dependencies versions)
-        - name: Install bundler
-          run: |
-            gem install bundler:2.5.13
-            bundle config path vendor/bundle
-            bundle install --jobs 4 --retry 3
-          working-directory: ./android
+            ruby-version: '3.3'
+            bundler-cache: true # runs 'bundle install' and caches installed gems automatically based on gemfile that includes fastlane
+        
+         # Step 4 Setup Flutter and dependencies to then run flutter build to avoid the "can't find gradlew" error within actions 
+        - name: Setup Flutter
+          uses: subosito/flutter-action@v1
+          with:
+            flutter-version: 3.22.1
+        - name: Install Flutter dependencies
+          run: flutter pub get
+        
+        - name: Build app apk
+          run: flutter build apk
 
         # Step 5 Install the Firebase app distribution plugin with fastlane
         - name: Install Firebase app distribution plugin
           run: bundle exec fastlane add_plugin firebase_app_distribution
           working-directory: ./android
   
-        # Step 6 Run the Base64 command to decode our PRIVATE_SERVICE_ACCOUNT_KEY and create the private-decoded-key.json file of our service account
-        - name: Generate private-decoded-key.json file
-          run: echo ${{secrets.SERVICE_ACCOUNT_KEY}} | base64 -d > /fastlane/credentials.json
+        # Step 6 Decode the base64 string of the Google Service account credentials from Github Secrets
+        - name: Generate credentials.json file
+          uses: timheuer/base64-to-file@v1.2
+          with:
+            fileName: 'credentials.json'
+            fileDir: './android/fastlane'
+            encodedString: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+
+        # Step 7 Run the tests with Gradle to ensure no issues
+        - name: Final run of tests
+          run: bundle exec fastlane test
           working-directory: ./android
-            
-        # Step 7 Run the fastlane command to update versionCode and versionName based on latest build uploaded on firebase
+      
+        # Step 7 Run the fastlane command to update versionCode
         - name: Upgrade build version
           run: bundle exec fastlane increment_version
           working-directory: ./android
