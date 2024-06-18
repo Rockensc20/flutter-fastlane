@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "256836786879",
+    "project_id": "flutter-fastlane-937a0",
+    "storage_bucket": "flutter-fastlane-937a0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256836786879:android:b503d2da9a33417ff1840a",
+        "android_client_info": {
+          "package_name": "com.flutter_fastlane.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaL-MJCrtfNAW4hTVlUe_CedfPJNE56wo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

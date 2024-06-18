@@ -1,0 +1,66 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+
+  desc "Increments version in the pubspec.yaml"
+    lane :increment_version do
+      # script.rb is a ruby script that increments the build number in pubspec.yaml
+      system("ruby ../increase-version-script.rb")
+  end
+
+  # uses firebase_app_distribution plugin
+  desc "Uses Firebase App Distribution to distribute the APK to testers"
+    lane :firebase_distribute do
+        gradle(
+          task: "assemble",
+          build_type: "Release"
+        )
+        # build_android_app is a built-in fastlane action.
+        release = firebase_app_distribution(
+            service_credentials_file: "./fastlane/credentials.json",
+            app: ENV["FIREBASE_APP_ID"],
+            android_artifact_type: "APK",
+            android_artifact_path:"../build/app/outputs/apk/release/app-release.apk",
+            testers_file: "./fastlane/tester-list.txt",
+            release_notes_file: "./fastlane/release-notes.txt",
+            debug: true
+        )
+    end
+
+  lane :beta do
+    # Both build_type and flavor can be adjusted depending on the setup
+    # To find all Gradle commands use 'fastlane action gradle' in the CLI
+    gradle(
+      task: 'assemble',
+      build_type: 'Release'
+    )
+
+    #upload_to_play_store(track: 'beta')
+  end
+
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
+  end
+end

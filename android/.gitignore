@@ -1,0 +1,16 @@
+gradle-wrapper.jar
+/.gradle
+/captures/
+/gradlew
+/gradlew.bat
+/local.properties
+GeneratedPluginRegistrant.java
+
+# Remember to never publicly share your keystore.
+# See https://flutter.dev/docs/deployment/android#reference-the-keystore-from-the-app
+key.properties
+**/*.keystore
+**/*.jks
+android\fastlane\development-tests-426606-5592f2a51fc8.json
+C:\Users\lukas\Documents\Master@HGB\CICD\flutter-fastlane\flutter_fastlane\android\fastlane\development-tests-426606-5592f2a51fc8.json
+C:\Users\lukas\Documents\Master@HGB\CICD\flutter-fastlane\flutter_fastlane\android\fastlane\flutter-fastlane-937a0-firebase-adminsdk-2kxu9-36277bbb8d.json
