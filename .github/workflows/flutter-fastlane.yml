@@ -30,6 +30,15 @@ jobs:
           with:
             ruby-version: '3.3'
             bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+        - name: Setup Flutter
+          uses: subosito/flutter-action@v1
+          with:
+            flutter-version: 3.22.1
+        - name: Install Flutter dependencies
+          run: flutter pub get
+        
+        - name: Build app apk
+          run: flutter build apk
 
         # Step 5 Install the Firebase app distribution plugin with fastlane
         - name: Install Firebase app distribution plugin
