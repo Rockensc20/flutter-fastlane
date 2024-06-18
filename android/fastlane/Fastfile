@@ -31,7 +31,7 @@ platform :android do
   # uses firebase_app_distribution plugin
   desc "Uses Firebase App Distribution to distribute the APK to testers"
     lane :firebase_distribute do
-        Dir.chdir "../.." { sh("flutter", "build", "apk", "--release") } # Call Flutter Build
+        sh "flutter build apk -v"
         gradle(
           task: "assemble",
           build_type: "Release"
