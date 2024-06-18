@@ -2,7 +2,9 @@ name: flutter-fastlane-flow
 
 on:
     push:
-      branches: [ fastlane-with-github-action ]
+      branches: [ "main" ]
+    pull_request:
+      branches: [ "main" ]
 jobs:
     # Job 1 ->
     CI-Prod:
@@ -12,7 +14,7 @@ jobs:
       steps:
         # Step 1 Checkout Repository
         - name: Checkout repository
-          uses: actions/checkout@v2
+          uses: actions/checkout@v4
   
         # Step 2 Setup JDK
         - name: Setup JDK
