@@ -30,8 +30,6 @@ jobs:
           with:
             ruby-version: '3.3'
             bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-        - run: bundle exec rake
-          working-directory: ./android
 
         # Step 5 Install the Firebase app distribution plugin with fastlane
         - name: Install Firebase app distribution plugin
