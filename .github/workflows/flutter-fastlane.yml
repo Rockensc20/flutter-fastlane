@@ -37,10 +37,13 @@ jobs:
           working-directory: ./android
   
         # Step 6 Run the Base64 command to decode our PRIVATE_SERVICE_ACCOUNT_KEY and create the private-decoded-key.json file of our service account
-        - name: Generate private-decoded-key.json file
-          run: echo ${{secrets.SERVICE_ACCOUNT_KEY}} | base64 -d > /fastlane/credentials.json
-          working-directory: ./android
-            
+        - name: Generate credentials.json file
+          uses: timheuer/base64-to-file@v1.2
+          with:
+            fileName: 'credentials.json'
+            fileDir: './android/fastlane'
+            encodedString: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+      
         # Step 7 Run the fastlane command to update versionCode and versionName based on latest build uploaded on firebase
         - name: Upgrade build version
           run: bundle exec fastlane increment_version
