@@ -1,5 +1,5 @@
 ### Flutter-Fastlane Test ###
 
-Update from 18.06.2024 by Lukas:
+Update from 19.06.2024 by Lukas:
+    -added some text
     -minor bug fixes
-    -changed color

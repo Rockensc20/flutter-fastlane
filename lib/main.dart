@@ -112,6 +112,9 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            const Text(
+              'If you are seeing this you are on the "new Version"',
+            ),
           ],
         ),
       ),
